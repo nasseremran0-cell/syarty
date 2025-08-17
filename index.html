@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>منصة خدمات السيارات - النسخة الأولية</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+    h2 { color: #333; }
+    .container { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    input, select, button { margin: 5px 0; padding: 8px; width: 100%; }
+    button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    .list-item { border-bottom: 1px solid #ddd; padding: 5px 0; }
+  </style>
+</head>
+<body>
+
+<h1>منصة خدمات السيارات - نسخة أولية</h1>
+
+<div class="container">
+  <h2>تسجيل المستخدم</h2>
+  <input type="text" id="userName" placeholder="الاسم">
+  <input type="text" id="userCar" placeholder="نوع السيارة">
+  <button onclick="registerUser()">تسجيل</button>
+</div>
+
+<div class="container">
+  <h2>تسجيل مزود خدمة</h2>
+  <input type="text" id="providerName" placeholder="اسم المزود">
+  <select id="serviceType">
+    <option value="زيوت">زيوت</option>
+    <option value="إطارات">إطارات</option>
+    <option value="بطاريات">بطاريات</option>
+  </select>
+  <button onclick="registerProvider()">تسجيل المزود</button>
+</div>
+
+<div class="container">
+  <h2>تقديم طلب خدمة</h2>
+  <select id="selectUser"></select>
+  <select id="selectService">
+    <option value="زيوت">زيوت</option>
+    <option value="إطارات">إطارات</option>
+    <option value="بطاريات">بطاريات</option>
+  </select>
+  <button onclick="createRequest()">طلب الخدمة</button>
+</div>
+
+<div class="container">
+  <h2>طلبات الخدمات</h2>
+  <div id="requestsList"></div>
+</div>
+
+<script>
+  // تخزين البيانات مؤقتاً
+  let users = [];
+  let providers = [];
+  let requests = [];
+
+  function updateUserDropdown() {
+    const select = document.getElementById("selectUser");
+    select.innerHTML = '';
+    users.forEach((u, idx) => {
+      let option = document.createElement('option');
+      option.value = idx;
+      option.textContent = u.name + ' - ' + u.car;
+      select.appendChild(option);
+    });
+  }
+
+  function registerUser() {
+    const name = document.getElementById("userName").value;
+    const car = document.getElementById("userCar").value;
+    if(name && car) {
+      users.push({name, car});
+      updateUserDropdown();
+      alert("تم تسجيل المستخدم بنجاح!");
+      document.getElementById("userName").value = '';
+      document.getElementById("userCar").value = '';
+    } else alert("يرجى إدخال جميع البيانات");
+  }
+
+  function registerProvider() {
+    const name = document.getElementById("providerName").value;
+    const service = document.getElementById("serviceType").value;
+    if(name) {
+      providers.push({name, service});
+      alert("تم تسجيل مزود الخدمة بنجاح!");
+      document.getElementById("providerName").value = '';
+    } else alert("يرجى إدخال اسم المزود");
+  }
+
+  function createRequest() {
+    const userIdx = document.getElementById("selectUser").value;
+    const service = document.getElementById("selectService").value;
+    if(userIdx !== '') {
+      const user = users[userIdx];
+      requests.push({user: user.name, car: user.car, service});
+      renderRequests();
+      alert("تم تقديم الطلب!");
+    } else alert("اختر مستخدم لتقديم الطلب");
+  }
+
+  function renderRequests() {
+    const container = document.getElementById("requestsList");
+    container.innerHTML = '';
+    requests.forEach(req => {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      div.textContent = `المستخدم: ${req.user} | السيارة: ${req.car} | الخدمة: ${req.service}`;
+      container.appendChild(div);
+    });
+  }
+</script>
+
+</body>
+</html>
